@@ -1,0 +1,15 @@
+{
+  "name": "browser-js",
+  "homepage": "https://github.com/kud/browser-js",
+  "version": "1.10.1",
+  "_release": "1.10.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.10.1",
+    "commit": "67db873466b4fa9e8e1bcfcac603b762c1128725"
+  },
+  "_source": "https://github.com/kud/browser-js.git",
+  "_target": "~1.10.1",
+  "_originalSource": "https://github.com/kud/browser-js.git",
+  "_direct": true
+}
