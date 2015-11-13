@@ -17,6 +17,7 @@
   "dependencies": {
     "react": "~0.14.2",
     "bootstrap": "~3.3.5",
-    "browser-js": "https://github.com/kud/browser-js.git#~1.10.1"
+    "browser-js": "https://github.com/kud/browser-js.git#~1.10.1",
+    "babel-browser": "*"
   }
 }

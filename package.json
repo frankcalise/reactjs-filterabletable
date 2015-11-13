@@ -1,0 +1,26 @@
+{
+  "name": "reactjs-filterabletable",
+  "version": "1.0.0",
+  "description": "Demo to test out react, gulp and I'm sure a million other javascript libs",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frankcalise/reactjs-filterabletable.git"
+  },
+  "author": "Frank Calise",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/frankcalise/reactjs-filterabletable/issues"
+  },
+  "homepage": "https://github.com/frankcalise/reactjs-filterabletable#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-html-replace": "^1.5.4",
+    "gulp-react": "^3.1.0",
+    "gulp-uglify": "^1.5.1"
+  }
+}
