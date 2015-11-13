@@ -6,3 +6,5 @@ var Child = React.createClass({
       </div>)
   }
 });
+
+module.exports = Child;

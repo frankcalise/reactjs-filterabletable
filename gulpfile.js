@@ -1,28 +1,21 @@
 var gulp = require('gulp');
-var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var react = require('gulp-react');
 var htmlreplace = require('gulp-html-replace');
+var source = require('vinyl-source-stream');
+var browserify = require('browserify');
+var watchify = require('watchify');
+var reactify = require('reactify');
+var streamify = require('gulp-streamify');
 
 var path = {
   HTML: 'src/index.html',
-  ALL: ['src/js/*.js', 'src/js/**/*.js', 'src/index.html'],
-  JS: ['src/js/*.js', 'src/js/**/*.js'],
   MINIFIED_OUT: 'build.min.js',
-  DEST_SRC: 'dist/src',
+  OUT: 'build.js',
+  DEST: 'dist',
   DEST_BUILD: 'dist/build',
-  DEST: 'dist'
+  DEST_SRC: 'dist/src',
+  ENTRY_POINT: './src/js/app.js'
 };
-
-// Development gulp tasks
-// Take all JS files
-// Convert JSX to JS
-// Output results to dist/src
-gulp.task('transform', function(){
-  gulp.src(path.JS)
-    .pipe(react())
-    .pipe(gulp.dest(path.DEST_SRC));
-});
 
 // Copy index.html out to dist directory
 gulp.task('copy', function(){
@@ -30,14 +23,37 @@ gulp.task('copy', function(){
     .pipe(gulp.dest(path.DEST));
 });
 
-// Create task that will always run so when
-// index.html or JS files are changed, previous two tasks
-// will kick off automatically and update 
-// the code in the dist directory
-gulp.task('watch', function(){
-  gulp.watch(path.ALL, ['transform', 'copy']);
+// Watch the index.html for any changes and if something 
+// changes, run the copy task
+gulp.task('replaceHTMLsrc', function(){
+  gulp.src(path.HTML)
+    .pipe(htmlreplace({
+      'js': 'src/' + path.OUT
+    }))
+    .pipe(gulp.dest(path.DEST));
+});
+ 
+gulp.task('watch', ['replaceHTMLsrc'], function() {
+  gulp.watch(path.HTML, ['replaceHTMLsrc']);
+ 
+  var watcher  = watchify(browserify({
+    entries: [path.ENTRY_POINT],
+    transform: [reactify],
+    debug: true,
+    cache: {}, packageCache: {}, fullPaths: true
+  }));
+ 
+  return watcher.on('update', function () {
+    watcher.bundle()
+      .pipe(source(path.OUT))
+      .pipe(gulp.dest(path.DEST_SRC));
+      console.log('Updated');
+  })
+    .bundle()
+    .pipe(source(path.OUT))
+    .pipe(gulp.dest(path.DEST_SRC));
 });
 
-// Set up the default task when the 'gulp' command
-// is entered on the command line
+
+// Default task to run
 gulp.task('default', ['watch']);
