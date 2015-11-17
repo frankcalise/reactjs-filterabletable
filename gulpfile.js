@@ -1,11 +1,23 @@
+// skeleton, responsible for the build process
 var gulp = require('gulp');
-var uglify = require('gulp-uglify');
-var htmlreplace = require('gulp-html-replace');
+
+// response for logging info about build process to terminal
+var gutil = require('gulp-util');
+
+// used for piping file contents from one to another
 var source = require('vinyl-source-stream');
+
+// determines which code refs which and 
+// that include order is correct
 var browserify = require('browserify');
+
+// tool that automatically executes this gulp file
+// when there are changes to source files to start
+// the build process over
 var watchify = require('watchify');
+
+// handles converting jsx files to js
 var reactify = require('reactify');
-var streamify = require('gulp-streamify');
 
 var path = {
   HTML: 'src/index.html',
@@ -17,43 +29,37 @@ var path = {
   ENTRY_POINT: './src/js/app.js'
 };
 
-// Copy index.html out to dist directory
-gulp.task('copy', function(){
-  gulp.src(path.HTML)
-    .pipe(gulp.dest(path.DEST));
-});
+// default task to run
+gulp.task('default', function() {
+  gulp.watch(path.HTML, ['copyIndex']);
 
-// Watch the index.html for any changes and if something 
-// changes, run the copy task
-gulp.task('replaceHTMLsrc', function(){
-  gulp.src(path.HTML)
-    .pipe(htmlreplace({
-      'js': 'src/' + path.OUT
-    }))
-    .pipe(gulp.dest(path.DEST));
-});
- 
-gulp.task('watch', ['replaceHTMLsrc'], function() {
-  gulp.watch(path.HTML, ['replaceHTMLsrc']);
- 
-  var watcher  = watchify(browserify({
+  var bundler = watchify(browserify({
     entries: [path.ENTRY_POINT],
     transform: [reactify],
+    extensions: ['.js'],
     debug: true,
-    cache: {}, packageCache: {}, fullPaths: true
+    cache: {},
+    packageCache: {},
+    fullPaths: true
   }));
- 
-  return watcher.on('update', function () {
-    watcher.bundle()
+
+  function build(file) {
+    if (file) gutil.log('Recompiling ' + file);
+    return bundler
+      .bundle()
+      .on('error', gutil.log.bind(gutil, 'Browserify Error'))
       .pipe(source(path.OUT))
       .pipe(gulp.dest(path.DEST_SRC));
-      console.log('Updated');
-  })
-    .bundle()
-    .pipe(source(path.OUT))
-    .pipe(gulp.dest(path.DEST_SRC));
+  };
+
+  // copy index.html out to dist directory
+  function copyIndex() {
+    gulp.src(path.HTML)
+    .pipe(gulp.dest(path.DEST));
+  };
+
+  // run on initial gulp from cli
+  copyIndex();
+  build();
+  bundler.on('update', build);
 });
-
-
-// Default task to run
-gulp.task('default', ['watch']);
