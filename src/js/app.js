@@ -1,5 +1,5 @@
-var React = require('react');
+import React from 'react';
+import Parent from './Parent';
 
-var Parent = require('./Parent');
 
 React.render(<Parent />, document.getElementById('app'));

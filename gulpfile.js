@@ -19,6 +19,12 @@ var watchify = require('watchify');
 // handles converting jsx files to js
 var reactify = require('reactify');
 
+// for es6
+var babelify = require('babelify');
+
+// for merging objects
+var merge = require('utils-merge');
+
 var path = {
   HTML: 'src/index.html',
   MINIFIED_OUT: 'build.min.js',
@@ -33,15 +39,10 @@ var path = {
 gulp.task('default', function() {
   gulp.watch(path.HTML, ['copyIndex']);
 
-  var bundler = watchify(browserify({
-    entries: [path.ENTRY_POINT],
-    transform: [reactify],
-    extensions: ['.js'],
-    debug: true,
-    cache: {},
-    packageCache: {},
-    fullPaths: true
-  }));
+  var args = merge(watchify.args, { debug: true, extensions: ['.js'] });
+  var bundler = browserify(path.ENTRY_POINT)
+    .plugin(watchify)
+    .transform(babelify, {presets: ['es2015', 'react']});
 
   function build(file) {
     if (file) gutil.log('Recompiling ' + file);

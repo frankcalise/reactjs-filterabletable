@@ -1,9 +1,9 @@
-var React = require('react');
 
-var Child = require('./Child');
+import React from 'react';
+import Child from './Child';
 
-var Parent = React.createClass({
-  render: function() {
+export default class Parent extends React.Component {
+  render() {
     return (
       <div>
         <div> This is the parent. </div>
@@ -11,6 +11,4 @@ var Parent = React.createClass({
       </div>
     )
   }
-});
-
-module.exports = Parent;
+}
