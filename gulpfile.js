@@ -16,9 +16,6 @@ var browserify = require('browserify');
 // the build process over
 var watchify = require('watchify');
 
-// handles converting jsx files to js
-var reactify = require('reactify');
-
 // for es6
 var babelify = require('babelify');
 
